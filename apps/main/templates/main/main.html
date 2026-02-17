@@ -1,0 +1,58 @@
+{% extends 'main/base.html' %}
+
+{% block title %}My Dashboard{% endblock %}
+
+{% block content %}
+    <div class="row row-cols-1 row-cols-lg-2 g-4 justify-content-center">
+        {% for project in projects %}
+        <div class="col">
+            <div class="todo-card">
+                <div class="card-header-custom">
+                    <div class="header-title">
+                        <i class="bi bi-calendar3"></i>
+                        <span>{{project.name}}</span>
+                    </div>
+                    <div class="header-actions">
+                        <i class="bi bi-pencil-fill me-2" role="button"></i>
+                        <i class="bi bi-trash-fill" role="button"></i>
+                    </div>
+                </div>
+
+                <form method="" action="" class="add-task-row">
+                    <div class="add-icon-container d-none d-sm-block">
+                        <i class="bi bi-plus-lg"></i>
+                    </div>
+                    <input type="text" name="title" class="form-control task-input" placeholder="Start typing...">
+                    <button type="submit" class="btn btn-add-custom">Add Task</button>
+                </form>
+
+                <ul class="task-list">
+                    {%for task in project.tasks.all %}
+                    <li class="task-item">
+                        <div class="task-checkbox-area">
+                            <div class="custom-check"></div>
+                        </div>
+                        <div class="task-content-wrapper">
+                            <span class="task-text">{{task.name}}</span>
+                            <div class="action-icons">
+                                <i class="bi bi-arrow-down-up action-icon"></i>
+                                <i class="bi bi-pencil-fill action-icon"></i>
+                                <a href="#" class="text-secondary"><i class="bi bi-trash-fill action-icon"></i></a>
+                            </div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12 text-center">
+            <button class="btn big-add-btn">
+                <i class="bi bi-plus-lg me-2"></i> Add TODO List
+            </button>
+        </div>
+    </div>
+{% endblock %}
