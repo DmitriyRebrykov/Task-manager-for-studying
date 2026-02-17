@@ -14,15 +14,21 @@
                     </div>
                     <div class="header-actions">
                         <i class="bi bi-pencil-fill me-2" role="button"></i>
-                        <i class="bi bi-trash-fill" role="button"></i>
+                        <form method="POST" action="{% url 'main:project-delete' project.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link p-0">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
 
-                <form method="" action="" class="add-task-row">
+                <form method="POST" action="{% url 'main:task-create' project.pk %}" class="add-task-row">
+                    {% csrf_token %}
                     <div class="add-icon-container d-none d-sm-block">
                         <i class="bi bi-plus-lg"></i>
                     </div>
-                    <input type="text" name="title" class="form-control task-input" placeholder="Start typing...">
+                    {{task_form.name}}
                     <button type="submit" class="btn btn-add-custom">Add Task</button>
                 </form>
 

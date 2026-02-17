@@ -1,8 +1,9 @@
 from django.urls import reverse_lazy
-from django.views.generic import ListView, FormView
+from django.views.generic import ListView, FormView, DeleteView
 
-from apps.main.models import Project
-from apps.main.forms import ProjectCreationForm
+from apps.main.models import Project, Task
+from apps.main.forms import ProjectCreationForm, TaskCreationForm
+from django.contrib import messages
 
 class ProjectsListView(ListView):
     model = Project
@@ -12,6 +13,7 @@ class ProjectsListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = ProjectCreationForm()
+        context['task_form'] = TaskCreationForm()
         return context
 
 
@@ -24,4 +26,28 @@ class ProjectCreationView(FormView):
     def form_valid(self, form):
         print(form.cleaned_data)
         form.save()
+
+        messages.success(self.request, 'Project created successfully')
         return super().form_valid(form)
+
+class ProjectDeleteView(DeleteView):
+    model = Project
+    success_url = reverse_lazy('main:projects-list')
+
+
+class TaskCreationView(FormView):
+    model = Task
+    template_name = 'main/main.html'
+    form_class = TaskCreationForm
+    success_url = reverse_lazy('main:projects-list')
+
+    def form_valid(self, form, *args, **kwargs):
+        print(form.cleaned_data)
+        print(self.kwargs)
+        task = form.save(commit=False)
+        task.project_id = self.kwargs['pk']
+        form.save()
+
+        messages.success(self.request, 'Task created successfully')
+        return super().form_valid(form)
+
