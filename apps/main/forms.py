@@ -6,15 +6,26 @@ from apps.main.models import Project, Task
 class ProjectCreationForm(forms.ModelForm):
     class Meta:
         model = Project
-        fields = ['name']
+        fields = ["name"]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. Work Projects'}),
+            "name": forms.TextInput(
+                attrs={"class": "form-control", "placeholder": "e.g. Work Projects"}
+            ),
         }
+
 
 class TaskCreationForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['name']
+        fields = ["name", "deadline"]
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control task-input', 'placeholder': 'Start typing...'}),
+            "name": forms.TextInput(
+                attrs={
+                    "class": "form-control task-input",
+                    "placeholder": "Start typing...",
+                }
+            ),
+            "deadline": forms.DateTimeInput(
+                attrs={"class": "form-control", "type": "datetime-local"}
+            ),
         }

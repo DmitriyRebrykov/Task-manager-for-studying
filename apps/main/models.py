@@ -9,6 +9,7 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
+
 class Project(BaseModel):
     name = models.CharField(max_length=100)
 
@@ -16,9 +17,9 @@ class Project(BaseModel):
         return self.name
 
     class Meta:
-        verbose_name = 'Project'
-        verbose_name_plural = 'Projects'
-        ordering = ['name']
+        verbose_name = "Project"
+        verbose_name_plural = "Projects"
+        ordering = ["name"]
 
 
 class Task(BaseModel):
@@ -27,24 +28,20 @@ class Task(BaseModel):
     done = models.BooleanField(default=False)
     deadline = models.DateTimeField(null=True, blank=True)
 
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
 
     def __str__(self):
-        return f'Task {self.name} for {self.project}'
+        return f"Task {self.name} for {self.project}"
 
     def clean(self):
         super().clean()
 
         from django.utils import timezone
+
         if self.deadline and self.deadline < timezone.now():
-            raise ValidationError({
-                "deadline": (
-                    'Date cannot be'
-                )
-            })
+            raise ValidationError({"deadline": ("Date cannot be")})
 
     class Meta:
-        verbose_name = 'Task'
-        verbose_name_plural = 'Tasks'
-        ordering = ['name', 'deadline']
-
+        verbose_name = "Task"
+        verbose_name_plural = "Tasks"
+        ordering = ["name", "deadline"]
