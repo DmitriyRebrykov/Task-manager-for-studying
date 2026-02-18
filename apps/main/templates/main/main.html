@@ -5,6 +5,57 @@
 
 {% block content %}
     <style>
+.auth-widget {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.btn-auth-glass {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 6px 15px;
+    border-radius: 50px;
+    border: 1px solid #aaa;
+    text-decoration: none;
+    color: #444;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
+    transition: all 0.2s ease;
+}
+
+.btn-auth-glass:hover {
+    transform: translateY(1px);
+    background: #fff;
+    color: #222;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* Кружок аватарки */
+.auth-avatar-circle {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(to bottom, #5d9ad8 0%, #356fa3 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    border: 2px solid white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.auth-username {
+    display: block;
+}
+@media (max-width: 576px) {
+    .auth-username { display: none; }
+    .btn-auth-glass { padding: 5px; }
+}
         .task-list {
             list-style: none;
             padding: 0;
@@ -52,6 +103,23 @@
     text-decoration: line-through;
 }
     </style>
+    <div class="auth-widget">
+        {% if user.is_authenticated %}
+        <a href="{%url 'accounts:profile'%}">
+            <button class="btn btn-auth-glass" type="button" data-bs-toggle="modal" data-bs-target="">
+                <span class="auth-username">{{ user.username }}</span>
+                <div class="auth-avatar-circle">
+                    <i class="bi bi-person-fill"></i>
+                </div>
+            </button></a>
+        {% else %}
+            <a href="{% url 'accounts:login' %}" class="btn-auth-glass">
+                <span class="me-1">Log In</span>
+                <i class="bi bi-box-arrow-in-right" style="font-size: 1.2rem; color: #5d9ad8;"></i>
+            </a>
+        {% endif %}
+    </div>
+
     <div class="row row-cols-1 row-cols-lg-2 g-4 justify-content-center">
         {% for project in projects %}
         <div class="col">
@@ -85,9 +153,9 @@
                     <button type="submit" class="btn btn-add-custom">Add Task</button>
                 </form>
 
-                <ul class="task-list">
+                <ul class="task-list" data-project-id="{{ project.pk }}">
                     {%for task in project.tasks.all %}
-                    <li class="task-item">
+                    <li class="task-item {% if task.done %}task-done{% endif %}" data-id="{{ task.pk }}">
                         <div class="task-checkbox-area">
                             <form method="POST" action="{% url 'main:task-toggle' task.pk %}">
                                 {% csrf_token %}
@@ -220,4 +288,34 @@
             </div>
         </div>
     </div>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".task-list").forEach(function (taskList) {
+            Sortable.create(taskList, {
+                handle: ".bi-arrow-down-up",
+                animation: 150,
+                filter: ".task-done",
+                preventOnFilter: true,
+                onEnd: function () {
+                    const items = taskList.querySelectorAll(".task-item");
+                    const order = Array.from(items)
+                        .filter(el => !el.classList.contains("task-done"))
+                        .map(el => ({ id: el.dataset.id }));
+
+                    fetch("{% url 'main:task-reorder' %}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": "{{ csrf_token }}",
+                        },
+                        body: JSON.stringify(order),
+                    })
+                    .then(r => r.json())
+                    .then(data => console.log("Response:", data))
+                    .catch(err => console.error("Error:", err));
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}

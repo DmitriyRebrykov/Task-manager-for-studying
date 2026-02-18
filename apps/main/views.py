@@ -1,3 +1,6 @@
+import json
+
+from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import View
@@ -93,3 +96,11 @@ class TaskToggleView(View):
         task.done = not task.done
         task.save()
         return redirect(request.META.get("HTTP_REFERER", "/"))
+
+
+class TaskReorderView(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+        for index, item in enumerate(data):
+            Task.objects.filter(pk=item["id"]).update(order=index)
+        return JsonResponse({"status": "ok"})

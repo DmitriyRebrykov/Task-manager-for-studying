@@ -24,10 +24,9 @@ class Project(BaseModel):
 
 class Task(BaseModel):
     name = models.CharField(max_length=100)
-
     done = models.BooleanField(default=False)
     deadline = models.DateTimeField(null=True, blank=True)
-
+    order = models.PositiveIntegerField(default=0)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
 
     def __str__(self):
@@ -44,4 +43,4 @@ class Task(BaseModel):
     class Meta:
         verbose_name = "Task"
         verbose_name_plural = "Tasks"
-        ordering = ["name", "deadline"]
+        ordering = ["order", "name"]

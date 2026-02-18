@@ -36,4 +36,5 @@ urlpatterns = [
         name="task-update",
     ),
     path("tasks/<int:pk>/toggle/", views.TaskToggleView.as_view(), name="task-toggle"),
+    path("tasks/reorder/", views.TaskReorderView.as_view(), name="task-reorder"),
 ]
