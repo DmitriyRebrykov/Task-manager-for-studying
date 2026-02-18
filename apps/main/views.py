@@ -9,7 +9,6 @@ from django.views.generic import ListView, FormView, DeleteView, UpdateView
 
 from apps.main.models import Project, Task
 from apps.main.forms import ProjectCreationForm, TaskCreationForm
-from django.contrib import messages
 
 
 class ProjectsListView(LoginRequiredMixin, ListView):
@@ -37,7 +36,6 @@ class ProjectCreationView(LoginRequiredMixin, FormView):
         project = form.save(commit=False)
         project.user = self.request.user
         project.save()
-        messages.success(self.request, "Project created successfully")
         return super().form_valid(form)
 
 
@@ -48,7 +46,6 @@ class ProjectUpdateView(UpdateView):
     success_url = reverse_lazy("main:projects-list")
 
     def form_valid(self, form, *args, **kwargs):
-        messages.success(self.request, "Project was updated successfully")
         return super().form_valid(form)
 
 
@@ -57,7 +54,6 @@ class ProjectDeleteView(DeleteView):
     success_url = reverse_lazy("main:projects-list")
 
     def form_valid(self, form, *args, **kwargs):
-        messages.success(self.request, "Project deleted successfully")
         return super().form_valid(form)
 
 
@@ -75,7 +71,6 @@ class TaskCreationView(FormView):
         if self.request.headers.get("HX-Request"):
             return render(self.request, "main/partials/task_item.html", {"task": task})
 
-        messages.success(self.request, "Task created successfully")
         return super().form_valid(form)
 
 
@@ -91,7 +86,6 @@ class TaskUpdateView(UpdateView):
         if self.request.headers.get("HX-Request"):
             return render(self.request, "main/partials/task_item.html", {"task": task})
 
-        messages.success(self.request, "Task updated successfully")
         return super().form_valid(form)
 
 
@@ -103,7 +97,6 @@ class TaskDeleteView(View):
         if request.headers.get("HX-Request"):
             return HttpResponse("")
 
-        messages.success(request, "Task was deleted successfully")
         return redirect("main:projects-list")
 
 

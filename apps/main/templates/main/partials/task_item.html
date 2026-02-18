@@ -1,17 +1,19 @@
-<li class="task-item" data-id="{{ task.pk }}" id="task-{{ task.pk }}">
+<li class="task-item {% if task.done %}task-done{% endif %}" data-id="{{ task.pk }}" id="task-{{ task.pk }}">
     <div class="task-checkbox-area">
         <form hx-post="{% url 'main:task-toggle' task.pk %}"
               hx-target="#task-{{ task.pk }}"
               hx-swap="outerHTML">
             {% csrf_token %}
-            <input type="checkbox" class="custom-check"
+            <input type="checkbox"
+                   class="custom-check"
                    name="done"
                    {% if task.done %}checked{% endif %}
-                   onchange="this.form.requestSubmit()">
+                   onchange="htmx.trigger(this.form, 'submit')">
         </form>
     </div>
     <div class="task-content-wrapper">
-        <span class="task-text">{{ task.name }}</span>
+        <span class="task-text {% if task.done %}text-decoration-line-through text-muted{% endif %}">{{task.name}}</span>
+        {% if not task.done %}
         <div class="action-icons">
             <i class="bi bi-arrow-down-up action-icon"></i>
             <i class="bi bi-pencil-fill action-icon"
@@ -24,10 +26,11 @@
                   hx-swap="outerHTML swap:1s"
                   style="display: inline;">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-link p-0 text-dark">
+                <button type="submit" class="btn btn-link p-0 text-dark task-delete-btn">
                     <i class="bi bi-trash-fill action-icon"></i>
                 </button>
             </form>
         </div>
+        {% endif %}
     </div>
 </li>

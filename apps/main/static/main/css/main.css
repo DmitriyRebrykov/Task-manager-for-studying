@@ -95,23 +95,18 @@
 .text-decoration-line-through {
     text-decoration: line-through;
 }
-/* --- Исправление шапки (выравнивание) --- */
 .header-actions {
-    display: flex;           /* Включаем флексбокс */
-    align-items: center;     /* Выравниваем иконки по вертикали */
-    gap: 8px;               /* Расстояние между карандашом и мусоркой */
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* Убираем отступы у формы, чтобы она не ломала строку */
 .header-actions form {
     margin: 0;
     display: flex;
     align-items: center;
 }
 
-/* --- Цвета иконок --- */
-
-/* Карандаш в шапке (белый) */
 .header-actions .bi-pencil-fill {
     color: white;
     opacity: 0.8;
@@ -121,9 +116,8 @@
     opacity: 1;
 }
 
-/* Мусорка ПРОЕКТА (белая) */
 .project-delete-btn {
-    color: white !important; /* Принудительно белый */
+    color: white !important;
     opacity: 0.8;
     transition: opacity 0.2s;
 }
@@ -131,12 +125,11 @@
     opacity: 1;
 }
 
-/* Мусорка ЗАДАЧИ (черная) */
 .task-delete-btn {
-    color: black !important; /* Принудительно черный */
+    color: black !important;
     opacity: 0.6;
 }
 .task-delete-btn:hover {
-    color: #ff0000 !important; /* При наведении можно сделать красной */
+    color: #ff0000 !important;
     opacity: 1;
 }

@@ -7,16 +7,14 @@
 
     <div class="auth-widget">
         {% if user.is_authenticated %}
-        <a href="{%url 'accounts:profile'%}">
-            <button class="btn btn-auth-glass" type="button">
-                <span class="auth-username">{{ user.username }}</span>
-                <div class="auth-avatar-circle">
-                    <i class="bi bi-person-fill"></i>
-                </div>
-            </button>
+        <a href="{% url 'accounts:profile' %}" class="btn btn-auth-glass" style="text-decoration: none; border: none; cursor: pointer;">
+            <span class="auth-username">{{ user.username }}</span>
+            <div class="auth-avatar-circle">
+                <i class="bi bi-person-fill"></i>
+            </div>
         </a>
         {% else %}
-            <a href="{% url 'accounts:login' %}" class="btn-auth-glass">
+            <a href="{% url 'accounts:login' %}" class="btn-auth-glass" style="text-decoration: none;">
                 <span class="me-1">Log In</span>
                 <i class="bi bi-box-arrow-in-right" style="font-size: 1.2rem; color: #5d9ad8;"></i>
             </a>
@@ -40,7 +38,6 @@
                         </i>
                         <form method="POST" action="{% url 'main:project-delete' project.pk %}">
                             {% csrf_token %}
-                            <!-- Добавил класс project-delete-btn и text-white -->
                             <button type="submit" class="btn btn-link p-0 project-delete-btn">
                                 <i class="bi bi-trash-fill"></i>
                             </button>
@@ -95,10 +92,6 @@
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                    {% empty %}
-                        <div class="text-center text-muted py-4">
-                            <small>Project list is empty</small>
                         </div>
                     {% endfor %}
                 </ul>
