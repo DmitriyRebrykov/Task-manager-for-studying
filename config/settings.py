@@ -34,7 +34,8 @@ THIRD_PARTY_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    "allauth.socialaccount.providers.google",
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
 ]
 
 LOCAL_APPS = [
@@ -141,8 +142,19 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': ['profile', 'email'],
         'AUTH_PARAMS': {'access_type': 'online'},
     },
+    'github': {
+        'APP':{
+            'client_id':config('OAUTH_GITHUB_CLIENT_ID'),
+            'secret':config('OAUTH_GITHUB_SECRET'),
+        },
+        'AUTH_PARAMS': {
+            'prompt': 'consent',
+        }
+    }
 }
+
 SITE_ID = 1
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
 LOGIN_REDIRECT_URL = "/accounts/profile/"
 LOGIN_URL = "/accounts/login/"
