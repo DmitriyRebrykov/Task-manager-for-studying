@@ -145,3 +145,4 @@ SOCIALACCOUNT_PROVIDERS = {
 SITE_ID = 1
 SOCIALACCOUNT_LOGIN_ON_GET = True
 LOGIN_REDIRECT_URL = "/accounts/profile/"
+LOGIN_URL = "/accounts/login/"

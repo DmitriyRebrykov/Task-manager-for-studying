@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -11,10 +12,13 @@ from apps.main.forms import ProjectCreationForm, TaskCreationForm
 from django.contrib import messages
 
 
-class ProjectsListView(ListView):
+class ProjectsListView(LoginRequiredMixin, ListView):
     model = Project
     template_name = "main/main.html"
     context_object_name = "projects"
+
+    def get_queryset(self):
+        return Project.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -23,16 +27,16 @@ class ProjectsListView(ListView):
         return context
 
 
-class ProjectCreationView(FormView):
+class ProjectCreationView(LoginRequiredMixin, FormView):
     model = Project
     template_name = "main/main.html"
     form_class = ProjectCreationForm
     success_url = reverse_lazy("main:projects-list")
 
     def form_valid(self, form):
-        print(form.cleaned_data)
-        form.save()
-
+        project = form.save(commit=False)
+        project.user = self.request.user
+        project.save()
         messages.success(self.request, "Project created successfully")
         return super().form_valid(form)
 
