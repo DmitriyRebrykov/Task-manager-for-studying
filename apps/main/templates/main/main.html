@@ -1,117 +1,20 @@
 {% extends 'main/base.html' %}
-
+{%load static %}
 {% block title %}My Dashboard{% endblock %}
-
-
+{% block link %} <link rel="stylesheet" href="{% static 'main/css/main.css' %}">{% endblock %}
 {% block content %}
-    <style>
-.auth-widget {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-}
 
-.btn-auth-glass {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 6px 15px;
-    border-radius: 50px;
-    border: 1px solid #aaa;
-    text-decoration: none;
-    color: #444;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
-    transition: all 0.2s ease;
-}
 
-.btn-auth-glass:hover {
-    transform: translateY(1px);
-    background: #fff;
-    color: #222;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-}
-
-/* Кружок аватарки */
-.auth-avatar-circle {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(to bottom, #5d9ad8 0%, #356fa3 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.1rem;
-    border: 2px solid white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-}
-
-.auth-username {
-    display: block;
-}
-@media (max-width: 576px) {
-    .auth-username { display: none; }
-    .btn-auth-glass { padding: 5px; }
-}
-        .task-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 190px;
-            overflow-y: auto;
-        }
-
-        .task-list::-webkit-scrollbar {
-            width: 6px;
-        }
-        .task-list::-webkit-scrollbar-thumb {
-            background-color: #ccc;
-            border-radius: 4px;
-        }
-        .custom-check {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #5d9ad8;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    padding: 0;
-}
-
-.custom-check.checked {
-    background: #5d9ad8;
-    color: white;
-}
-
-.custom-check:hover {
-    border-color: #356fa3;
-    transform: scale(1.05);
-}
-
-.task-completed {
-    opacity: 0.7;
-}
-
-.text-decoration-line-through {
-    text-decoration: line-through;
-}
-    </style>
     <div class="auth-widget">
         {% if user.is_authenticated %}
         <a href="{%url 'accounts:profile'%}">
-            <button class="btn btn-auth-glass" type="button" data-bs-toggle="modal" data-bs-target="">
+            <button class="btn btn-auth-glass" type="button">
                 <span class="auth-username">{{ user.username }}</span>
                 <div class="auth-avatar-circle">
                     <i class="bi bi-person-fill"></i>
                 </div>
-            </button></a>
+            </button>
+        </a>
         {% else %}
             <a href="{% url 'accounts:login' %}" class="btn-auth-glass">
                 <span class="me-1">Log In</span>
@@ -130,21 +33,26 @@
                         <span>{{project.name}}</span>
                     </div>
                     <div class="header-actions">
-                        <i class="bi bi-pencil-fill me-2"
+                        <i class="bi bi-pencil-fill"
                            role="button"
                            data-bs-toggle="modal"
                            data-bs-target="#editProjectModal-{{ project.pk }}">
                         </i>
                         <form method="POST" action="{% url 'main:project-delete' project.pk %}">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-link p-0">
+                            <!-- Добавил класс project-delete-btn и text-white -->
+                            <button type="submit" class="btn btn-link p-0 project-delete-btn">
                                 <i class="bi bi-trash-fill"></i>
                             </button>
                         </form>
                     </div>
                 </div>
 
-                <form method="POST" action="{% url 'main:task-create' project.pk %}" class="add-task-row">
+                <form hx-post="{% url 'main:task-create' project.pk %}"
+                      hx-target="#task-list-{{ project.pk }}"
+                      hx-swap="beforeend"
+                      hx-on::after-request="this.reset()"
+                      class="add-task-row">
                     {% csrf_token %}
                     <div class="add-icon-container d-none d-sm-block">
                         <i class="bi bi-plus-lg"></i>
@@ -153,74 +61,45 @@
                     <button type="submit" class="btn btn-add-custom">Add Task</button>
                 </form>
 
-                <ul class="task-list" data-project-id="{{ project.pk }}">
-                    {%for task in project.tasks.all %}
-                    <li class="task-item {% if task.done %}task-done{% endif %}" data-id="{{ task.pk }}">
-                        <div class="task-checkbox-area">
-                            <form method="POST" action="{% url 'main:task-toggle' task.pk %}">
-                                {% csrf_token %}
-                                <input type="checkbox" class="custom-check"
-                                       name="done"
-                                       {% if task.done %}checked{% endif %}
-                                       onchange="this.form.submit()">
-                            </form>
-                        </div>
-                        <div class="task-content-wrapper">
-                            <span class="task-text {% if task.done %}text-decoration-line-through text-muted{% endif %}">{{task.name}}</span>
-                            {%if not task.done%}
-                            <div class="action-icons">
-                                <i class="bi bi-arrow-down-up action-icon"></i>
-                                <i class="bi bi-pencil-fill action-icon"
-                                   role="button"
-                                   data-bs-toggle="modal"
-                                   data-bs-target="#editTaskModal-{{ task.pk }}">
-                                </i>
-                                <form method="POST" action="{% url 'main:task-delete' task.pk %}" style="display: inline;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-link p-0 text-dark">
-                                        <i class="bi bi-trash-fill action-icon"></i>
-                                    </button>
-                                </form>
-                            </div>
-                            {%endif%}
-                        </div>
-                    </li>
+                <ul class="task-list" id="task-list-{{ project.pk }}" data-project-id="{{ project.pk }}">
+                    {% for task in project.tasks.all %}
+                        {% include 'main/partials/task_item.html' %}
 
-                    <div class="modal fade" id="editTaskModal-{{ task.pk }}" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header" style="background: linear-gradient(to bottom, #5d9ad8 0%, #356fa3 100%); color: white;">
-                                    <h5 class="modal-title">Edit Task</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
+                        <div class="modal fade" id="editTaskModal-{{ task.pk }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header" style="background: linear-gradient(to bottom, #5d9ad8 0%, #356fa3 100%); color: white;">
+                                        <h5 class="modal-title">Edit Task</h5>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
 
-                                <form method="POST" action="{% url 'main:task-update' task.pk %}">
-                                    {% csrf_token %}
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label class="form-label">Task Name:</label>
-                                            <input type="text" name="name" class="form-control" value="{{ task.name }}" required>
+                                    <form method="POST" action="{% url 'main:task-update' task.pk %}">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                            <div class="mb-3">
+                                                <label class="form-label">Task Name:</label>
+                                                <input type="text" name="name" class="form-control" value="{{ task.name }}" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Deadline (optional):</label>
+                                                <input type="datetime-local"
+                                                       name="deadline"
+                                                       class="form-control"
+                                                       value="{{ task.deadline|date:'Y-m-d\TH:i' }}">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="mb-3 mr-3">
-                                        <label class="form-label">Deadline (optional):</label>
-                                        <input type="datetime-local"
-                                               name="deadline"
-                                               class="form-control"
-                                               value="{{ task.deadline|date:'Y-m-d\TH:i' }}">
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        <button type="submit" class="btn btn-add-custom">Save Changes</button>
-                                    </div>
-                                </form>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-add-custom">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {%empty%}
-                    <div class="text-center text-muted py-4">
-                        <small>Project list is empty</small>
-                    </div>
+                    {% empty %}
+                        <div class="text-center text-muted py-4">
+                            <small>Project list is empty</small>
+                        </div>
                     {% endfor %}
                 </ul>
             </div>
@@ -249,12 +128,12 @@
                     </div>
                 </div>
             </div>
-            </div>
+        </div>
         {% empty %}
             <div class="text-center text-muted py-4">
                 <small>There are not any projects</small>
             </div>
-        {%endfor%}
+        {% endfor %}
     </div>
 
     <div class="row mt-5">
@@ -288,6 +167,7 @@
             </div>
         </div>
     </div>
+
     <script>
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".task-list").forEach(function (taskList) {
@@ -317,5 +197,5 @@
             });
         });
     });
-</script>
+    </script>
 {% endblock %}

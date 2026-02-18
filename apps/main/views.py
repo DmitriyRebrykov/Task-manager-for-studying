@@ -1,8 +1,8 @@
 import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
-from django.shortcuts import redirect, get_object_or_404
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import redirect, get_object_or_404, render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, FormView, DeleteView, UpdateView
@@ -18,7 +18,7 @@ class ProjectsListView(LoginRequiredMixin, ListView):
     context_object_name = "projects"
 
     def get_queryset(self):
-        return Project.objects.filter(user=self.request.user)
+        return Project.objects.filter(user=self.request.user).prefetch_related("tasks")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -68,11 +68,12 @@ class TaskCreationView(FormView):
     success_url = reverse_lazy("main:projects-list")
 
     def form_valid(self, form, *args, **kwargs):
-        print(form.cleaned_data)
-        print(self.kwargs)
         task = form.save(commit=False)
         task.project_id = self.kwargs["pk"]
-        form.save()
+        task.save()
+
+        if self.request.headers.get("HX-Request"):
+            return render(self.request, "main/partials/task_item.html", {"task": task})
 
         messages.success(self.request, "Task created successfully")
         return super().form_valid(form)
@@ -84,21 +85,37 @@ class TaskUpdateView(UpdateView):
     form_class = TaskCreationForm
     success_url = reverse_lazy("main:projects-list")
 
+    def form_valid(self, form):
+        task = form.save()
 
-class TaskDeleteView(DeleteView):
-    model = Task
-    success_url = reverse_lazy("main:projects-list")
+        if self.request.headers.get("HX-Request"):
+            return render(self.request, "main/partials/task_item.html", {"task": task})
 
-    def form_valid(self, form, *args, **kwargs):
-        messages.success(self.request, "Task was deleted successfully")
+        messages.success(self.request, "Task updated successfully")
         return super().form_valid(form)
 
 
+class TaskDeleteView(View):
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
+        task.delete()
+
+        if request.headers.get("HX-Request"):
+            return HttpResponse("")
+
+        messages.success(request, "Task was deleted successfully")
+        return redirect("main:projects-list")
+
+
 class TaskToggleView(View):
-    def post(self, request, *args, **kwargs):
-        task = get_object_or_404(Task, pk=kwargs["pk"])
+    def post(self, request, pk):
+        task = get_object_or_404(Task, pk=pk)
         task.done = not task.done
         task.save()
+
+        if request.headers.get("HX-Request"):
+            return render(request, "main/partials/task_item.html", {"task": task})
+
         return redirect(request.META.get("HTTP_REFERER", "/"))
 
 
