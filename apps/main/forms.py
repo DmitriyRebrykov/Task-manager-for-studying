@@ -28,4 +28,5 @@ class TaskCreationForm(forms.ModelForm):
             "deadline": forms.DateTimeInput(
                 attrs={"class": "form-control", "type": "datetime-local"}
             ),
+            "done": forms.CheckboxInput(attrs={"class": "custom-check"}),
         }

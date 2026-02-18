@@ -20,6 +20,37 @@
             background-color: #ccc;
             border-radius: 4px;
         }
+        .custom-check {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #5d9ad8;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.custom-check.checked {
+    background: #5d9ad8;
+    color: white;
+}
+
+.custom-check:hover {
+    border-color: #356fa3;
+    transform: scale(1.05);
+}
+
+.task-completed {
+    opacity: 0.7;
+}
+
+.text-decoration-line-through {
+    text-decoration: line-through;
+}
     </style>
     <div class="row row-cols-1 row-cols-lg-2 g-4 justify-content-center">
         {% for project in projects %}
@@ -58,10 +89,17 @@
                     {%for task in project.tasks.all %}
                     <li class="task-item">
                         <div class="task-checkbox-area">
-                            <div class="custom-check"></div>
+                            <form method="POST" action="{% url 'main:task-toggle' task.pk %}">
+                                {% csrf_token %}
+                                <input type="checkbox" class="custom-check"
+                                       name="done"
+                                       {% if task.done %}checked{% endif %}
+                                       onchange="this.form.submit()">
+                            </form>
                         </div>
                         <div class="task-content-wrapper">
-                            <span class="task-text">{{task.name}}</span>
+                            <span class="task-text {% if task.done %}text-decoration-line-through text-muted{% endif %}">{{task.name}}</span>
+                            {%if not task.done%}
                             <div class="action-icons">
                                 <i class="bi bi-arrow-down-up action-icon"></i>
                                 <i class="bi bi-pencil-fill action-icon"
@@ -76,6 +114,7 @@
                                     </button>
                                 </form>
                             </div>
+                            {%endif%}
                         </div>
                     </li>
 

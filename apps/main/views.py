@@ -1,4 +1,6 @@
+from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, FormView, DeleteView, UpdateView
 
 from apps.main.models import Project, Task
@@ -83,3 +85,11 @@ class TaskDeleteView(DeleteView):
     def form_valid(self, form, *args, **kwargs):
         messages.success(self.request, "Task was deleted successfully")
         return super().form_valid(form)
+
+
+class TaskToggleView(View):
+    def post(self, request, *args, **kwargs):
+        task = get_object_or_404(Task, pk=kwargs["pk"])
+        task.done = not task.done
+        task.save()
+        return redirect(request.META.get("HTTP_REFERER", "/"))
