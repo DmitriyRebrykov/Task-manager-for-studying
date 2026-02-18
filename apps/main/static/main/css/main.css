@@ -1,135 +1,141 @@
 .auth-widget {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
 }
 
 .btn-auth-glass {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 6px 15px;
-    border-radius: 50px;
-    border: 1px solid #aaa;
-    text-decoration: none;
-    color: #444;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.8);
-    transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 6px 15px;
+  border-radius: 50px;
+  border: 1px solid #aaa;
+  text-decoration: none;
+  color: #444;
+  font-weight: bold;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.2s ease;
 }
 
 .btn-auth-glass:hover {
-    transform: translateY(1px);
-    background: #fff;
-    color: #222;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  transform: translateY(1px);
+  background: #fff;
+  color: #222;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 /* Кружок аватарки */
 .auth-avatar-circle {
-    width: 32px;
-    height: 32px;
-    background: linear-gradient(to bottom, #5d9ad8 0%, #356fa3 100%);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 1.1rem;
-    border: 2px solid white;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(to bottom, #5d9ad8 0%, #356fa3 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.1rem;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .auth-username {
-    display: block;
+  display: block;
 }
 @media (max-width: 576px) {
-    .auth-username { display: none; }
-    .btn-auth-glass { padding: 5px; }
+  .auth-username {
+    display: none;
+  }
+  .btn-auth-glass {
+    padding: 5px;
+  }
 }
-        .task-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            max-height: 190px;
-            overflow-y: auto;
-        }
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 190px;
+  overflow-y: auto;
+}
 
-        .task-list::-webkit-scrollbar {
-            width: 6px;
-        }
-        .task-list::-webkit-scrollbar-thumb {
-            background-color: #ccc;
-            border-radius: 4px;
-        }
-        .custom-check {
-    width: 20px;
-    height: 20px;
-    border: 2px solid #5d9ad8;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    padding: 0;
+.task-list::-webkit-scrollbar {
+  width: 6px;
+}
+.task-list::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+.custom-check {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #5d9ad8;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  padding: 0;
 }
 
 .custom-check.checked {
-    background: #5d9ad8;
-    color: white;
+  background: #5d9ad8;
+  color: white;
 }
 
 .custom-check:hover {
-    border-color: #356fa3;
-    transform: scale(1.05);
+  border-color: #356fa3;
+  transform: scale(1.05);
 }
 
 .task-completed {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 .text-decoration-line-through {
-    text-decoration: line-through;
+  text-decoration: line-through;
 }
 .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .header-actions form {
-    margin: 0;
-    display: flex;
-    align-items: center;
+  margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 .header-actions .bi-pencil-fill {
-    color: white;
-    opacity: 0.8;
-    transition: opacity 0.2s;
+  color: white;
+  opacity: 0.8;
+  transition: opacity 0.2s;
 }
 .header-actions .bi-pencil-fill:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 .project-delete-btn {
-    color: white !important;
-    opacity: 0.8;
-    transition: opacity 0.2s;
+  color: white !important;
+  opacity: 0.8;
+  transition: opacity 0.2s;
 }
 .project-delete-btn:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 .task-delete-btn {
-    color: black !important;
-    opacity: 0.6;
+  color: black !important;
+  opacity: 0.6;
 }
 .task-delete-btn:hover {
-    color: #ff0000 !important;
-    opacity: 1;
+  color: #ff0000 !important;
+  opacity: 1;
 }

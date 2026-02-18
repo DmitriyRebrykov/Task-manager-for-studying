@@ -6,41 +6,41 @@
 {% block title %}Sign In{% endblock %}
 
 {%block link%}
-<link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
 {%endblock%}
 
 {% block content %}
-<div class="login-container">
-    <div class="login-card">
+    <div class="login-container">
+        <div class="login-card">
 
-        <div class="login-header">
-            <h3><i class="bi bi-shield-lock-fill me-2"></i>Welcome</h3>
-            <div style="font-size: 0.9rem; opacity: 0.8;">Please sign in to continue</div>
-        </div>
+            <div class="login-header">
+                <h3><i class="bi bi-shield-lock-fill me-2"></i>Welcome</h3>
+                <div style="font-size: 0.9rem; opacity: 0.8;">Please sign in to continue</div>
+            </div>
 
-        <div class="login-body">
+            <div class="login-body">
 
-            <a href="{% provider_login_url 'google'%}" class="btn-social btn-google">
-                <i class="bi bi-google" style="color: #DB4437;"></i>
-                Sign in with Google
-            </a>
+                <a href="{% provider_login_url 'google'%}" class="btn-social btn-google">
+                    <i class="bi bi-google" style="color: #DB4437;"></i>
+                    Sign in with Google
+                </a>
 
 <!--            <a href="#" class="btn-social btn-facebook">-->
 <!--                <i class="bi bi-facebook"></i>-->
 <!--                Sign in with Facebook-->
 <!--            </a>-->
 
-            <a href="{% provider_login_url 'github'%}" class="btn-social btn-github">
-                <i class="bi bi-github"></i>
-                Sign in with GitHub
-            </a>
+                <a href="{% provider_login_url 'github'%}" class="btn-social btn-github">
+                    <i class="bi bi-github"></i>
+                    Sign in with GitHub
+                </a>
 
-            <div class="login-footer">
-                By signing in, you agree to our <br>
-                <a href="#" class="text-secondary fw-bold">Terms of Service</a>
+                <div class="login-footer">
+                    By signing in, you agree to our <br>
+                    <a href="#" class="text-secondary fw-bold">Terms of Service</a>
+                </div>
+
             </div>
-
         </div>
     </div>
-</div>
 {% endblock %}
