@@ -1,11 +1,10 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 
 
-def login(request):
-    return render(request, "accounts/login.html")
+class LoginView(TemplateView):
+    template_name = "accounts/login.html"
 
 
 @method_decorator(login_required, name="dispatch")
