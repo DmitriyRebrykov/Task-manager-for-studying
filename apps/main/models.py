@@ -40,7 +40,7 @@ class Task(BaseModel):
         from django.utils import timezone
 
         if self.deadline and self.deadline < timezone.now():
-            raise ValidationError({"deadline": ("Date cannot be")})
+            raise ValidationError({"deadline": ("Deadline cannot be in the past.")})
 
     class Meta:
         verbose_name = "Task"
